@@ -169,14 +169,12 @@ function App() {
                   key={index}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  {/* Дел за текстот */}
                   <div>
                     {`Маркер ${index + 1}: `}
                     <span className="text-muted small">
                       {`(${position[0].toFixed(3)}, ${position[1].toFixed(3)})`}
                     </span>
                   </div>
-                  {/* Копче за бришење */}
                   <button
                     className="btn btn-sm btn-outline-danger"
                     onClick={() => handleDeleteMarker(index)}
