@@ -236,7 +236,7 @@ function App() {
                     onClick={() => handleStepClick(step)}
                   >
                     <div className="fw-bold text-capitalize">
-                      {step.maneuver.type}
+                      {step.maneuver.type === 'new name' ? 'Continue' : step.maneuver.type}
                     </div>
                     {step.name && (
                       <div className="text-muted fst-italic">
