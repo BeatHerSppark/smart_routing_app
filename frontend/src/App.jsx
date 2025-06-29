@@ -14,7 +14,6 @@ import {
   faPersonWalking,
 } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
-// ЗАБЕЛЕШКА: Линијата 'import "./App.css";' е избришана бидејќи веќе не е потребна.
 
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
@@ -75,9 +74,7 @@ function App() {
   };
 
   return (
-    // Главен контејнер со Flexbox од Bootstrap
     <div className="d-flex vh-100">
-      {/* Контролен панел (сајдбар) со Bootstrap класи */}
       <div
         className="d-flex flex-column p-3 bg-light border-end shadow-sm"
         style={{ width: "380px", overflowY: "auto" }}
@@ -88,7 +85,6 @@ function App() {
           Кликнете на мапата за да додадете локации (маркери).
         </p>
 
-        {/* Избор на рута со Bootstrap Button Group */}
         <div className="btn-group w-100 mb-3" role="group">
           <button
             type="button"
@@ -110,7 +106,6 @@ function App() {
           </button>
         </div>
 
-        {/* izbor na metod na transportation */}
         <div className="btn-group w-100 mb-3" role="group">
           <button
             type="button"
@@ -141,7 +136,6 @@ function App() {
           </button>
         </div>
 
-        {/* Копчиња со Bootstrap стил */}
         <button
           onClick={handleOptimizeRoute}
           className="btn btn-success w-100 mb-2"
@@ -152,7 +146,6 @@ function App() {
           Исчисти маркери
         </button>
 
-        {/* Листа со локации со Bootstrap List Group */}
         <div className="mt-4">
           <h5>Додадени локации:</h5>
           {markers.length === 0 ? (
@@ -177,7 +170,6 @@ function App() {
           )}
         </div>
 
-        {/* Листа со насоки со Bootstrap List Group */}
         <div className="mt-3 flex-grow-1">
           <h5>Насоки:</h5>
           {routeSteps.length === 0 ? (
@@ -197,7 +189,6 @@ function App() {
         </div>
       </div>
 
-      {/* Контејнер за мапата */}
       <div className="flex-grow-1">
         <MapContainer
           center={[41.6, 21.74]}
