@@ -54,9 +54,9 @@
   background-color: #5a6268;
 }
 
-.marker-list {
+.marker-list,
+.step-list {
   margin-top: 20px;
-  flex-grow: 1;
 }
 
 .marker-list h3 {
