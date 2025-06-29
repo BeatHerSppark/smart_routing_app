@@ -7,6 +7,13 @@ import {
   useMapEvents,
   Polyline,
 } from "react-leaflet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCar,
+  faBicycle,
+  faPersonWalking,
+} from "@fortawesome/free-solid-svg-icons";
+import "./App.css";
 // ЗАБЕЛЕШКА: Линијата 'import "./App.css";' е избришана бидејќи веќе не е потребна.
 
 function MapClickHandler({ onMapClick }) {
@@ -25,6 +32,7 @@ function App() {
   const [routeCoords, setRouteCoords] = useState([]);
   const [routeSteps, setRouteSteps] = useState([]);
   const [routeType, setRouteType] = useState("round_trip");
+  const [transportation, setTransportation] = useState("car");
 
   const handleMapClick = (latlng) => {
     const { lat, lng } = latlng;
@@ -41,6 +49,7 @@ function App() {
     const payload = {
       markers: markers,
       type: routeType,
+      transportation: transportation,
     };
 
     const response = await fetch(`${url}/api/find-optimal-route`, {
@@ -71,7 +80,7 @@ function App() {
       {/* Контролен панел (сајдбар) со Bootstrap класи */}
       <div
         className="d-flex flex-column p-3 bg-light border-end shadow-sm"
-        style={{ width: '380px', overflowY: 'auto' }}
+        style={{ width: "380px", overflowY: "auto" }}
       >
         <h2 className="text-center mb-3">Smart Routing App</h2>
 
@@ -83,22 +92,60 @@ function App() {
         <div className="btn-group w-100 mb-3" role="group">
           <button
             type="button"
-            className={`btn ${routeType === 'round_trip' ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setRouteType('round_trip')}
+            className={`btn ${
+              routeType === "round_trip" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setRouteType("round_trip")}
           >
             Кружна тура
           </button>
           <button
             type="button"
-            className={`btn ${routeType === 'one_way' ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setRouteType('one_way')}
+            className={`btn ${
+              routeType === "one_way" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setRouteType("one_way")}
           >
             Еднонасочна рута
           </button>
         </div>
 
+        {/* izbor na metod na transportation */}
+        <div className="btn-group w-100 mb-3" role="group">
+          <button
+            type="button"
+            className={`btn ${
+              transportation === "car" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setTransportation("car")}
+          >
+            <FontAwesomeIcon icon={faCar} />
+          </button>
+          <button
+            type="button"
+            className={`btn ${
+              transportation === "bike" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setTransportation("bike")}
+          >
+            <FontAwesomeIcon icon={faBicycle} />
+          </button>
+          <button
+            type="button"
+            className={`btn ${
+              transportation === "foot" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setTransportation("foot")}
+          >
+            <FontAwesomeIcon icon={faPersonWalking} />
+          </button>
+        </div>
+
         {/* Копчиња со Bootstrap стил */}
-        <button onClick={handleOptimizeRoute} className="btn btn-success w-100 mb-2">
+        <button
+          onClick={handleOptimizeRoute}
+          className="btn btn-success w-100 mb-2"
+        >
           Оптимизирај рута
         </button>
         <button onClick={handleClear} className="btn btn-danger w-100">
@@ -111,9 +158,15 @@ function App() {
           {markers.length === 0 ? (
             <p className="text-muted">Нема додадени локации.</p>
           ) : (
-            <ul className="list-group overflow-y-auto" style={{ maxHeight: '200px' }}>
+            <ul
+              className="list-group overflow-y-auto"
+              style={{ maxHeight: "200px" }}
+            >
               {markers.map((position, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                <li
+                  key={index}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
                   {`Маркер ${index + 1}`}
                   <span className="badge bg-secondary rounded-pill">
                     {`${position[0].toFixed(3)}, ${position[1].toFixed(3)}`}

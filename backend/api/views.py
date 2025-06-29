@@ -7,7 +7,8 @@ def find_optimal_route(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         markers = data['markers']
-        transportation = 'driving' # za sega, inache kje dodademe tochak, pesh
+        transportation = data['transportation']
+        print(transportation)
 
         if len(markers) < 2:
             return JsonResponse({'error': 'Must have at least 2 markers!'}, status=400)
