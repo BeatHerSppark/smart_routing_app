@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
   useMapEvents,
+  useMap,
   Polyline,
 } from "react-leaflet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +16,20 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
+function MapCenterController({ center }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (center) {
+      map.flyTo(center, 16, {
+        animate: true,
+        duration: 1.5,
+      });
+    }
+  }, [center]);
+
+  return null;
+}
 
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
@@ -33,6 +48,9 @@ function App() {
   const [routeSteps, setRouteSteps] = useState([]);
   const [routeType, setRouteType] = useState("round_trip");
   const [transportation, setTransportation] = useState("car");
+  const DIRECTIONS_PER_PAGE = 5;
+  const [visibleSteps, setVisibleSteps] = useState(DIRECTIONS_PER_PAGE);
+  const [mapCenter, setMapCenter] = useState(null);
 
   const handleMapClick = (latlng) => {
     const { lat, lng } = latlng;
@@ -43,14 +61,28 @@ function App() {
     setMarkers([]);
     setRouteCoords([]);
     setRouteSteps([]);
+    setVisibleSteps(DIRECTIONS_PER_PAGE);
+    setMapCenter(null);
   };
 
   const handleDeleteMarker = (markerIndex) => {
     setRouteCoords([]);
     setRouteSteps([]);
+    setVisibleSteps(DIRECTIONS_PER_PAGE);
     setMarkers((prevMarkers) =>
       prevMarkers.filter((_, index) => index !== markerIndex)
     );
+  };
+
+  const handleShowMore = () => {
+    setVisibleSteps(
+      (prevVisibleSteps) => prevVisibleSteps + DIRECTIONS_PER_PAGE
+    );
+  };
+
+  const handleStepClick = (step) => {
+    const [lng, lat] = step.maneuver.location;
+    setMapCenter([lat, lng]);
   };
 
   const handleOptimizeRoute = async () => {
@@ -79,6 +111,7 @@ function App() {
       setRouteCoords(coords);
       const flatSteps = data.trips[0].legs.flatMap((leg) => leg.steps);
       setRouteSteps(flatSteps);
+      setVisibleSteps(DIRECTIONS_PER_PAGE);
     }
   };
 
@@ -193,16 +226,40 @@ function App() {
           {routeSteps.length === 0 ? (
             <p className="text-muted">Насоките ќе се појават тука.</p>
           ) : (
-            <ul className="list-group overflow-y-auto">
-              {routeSteps.map((step, index) => (
-                <li key={index} className="list-group-item">
-                  <div className="fw-bold">{step.maneuver.type}</div>
-                  <small className="text-muted">
-                    Растојание: {(step.distance / 1000).toFixed(2)} km
-                  </small>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="list-group">
+                {routeSteps.slice(0, visibleSteps).map((step, index) => (
+                  <li
+                    key={index}
+                    className="list-group-item list-group-item-action"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleStepClick(step)}
+                  >
+                    <div className="fw-bold text-capitalize">
+                      {step.maneuver.type}
+                    </div>
+                    {step.name && (
+                      <div className="text-muted fst-italic">
+                        "{step.name}"
+                      </div>
+                    )}
+                    <small className="text-muted">
+                      Растојание: {(step.distance / 1000).toFixed(2)} km
+                    </small>
+                  </li>
+                ))}
+              </ul>
+              {visibleSteps < routeSteps.length && (
+                <div className="d-grid mt-2">
+                  <button
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={handleShowMore}
+                  >
+                    Прикажи повеќе ({routeSteps.length - visibleSteps} останати)
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -229,6 +286,7 @@ function App() {
               pathOptions={{ color: "blue", weight: 5, opacity: 0.7 }}
             />
           )}
+          <MapCenterController center={mapCenter} />
         </MapContainer>
       </div>
     </div>

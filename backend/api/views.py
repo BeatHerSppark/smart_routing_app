@@ -14,8 +14,8 @@ def find_optimal_route(request):
             return JsonResponse({'error': 'Must have at least 2 markers!'}, status=400)
 
         markers_formatted = ';'.join([f'{lng},{lat}' for lat,lng in markers])
-
-        api_url = f'http://router.project-osrm.org/trip/v1/{transportation}/{markers_formatted}?steps=true&geometries=geojson&annotations=true' # /route ednonasocna
+        print(markers_formatted)
+        api_url = f'http://router.project-osrm.org/trip/v1/{transportation}/{markers_formatted}?steps=true&geometries=geojson&annotations=true'
 
         response = requests.get(api_url)
 
