@@ -12,8 +12,9 @@ import {
   faCar,
   faBicycle,
   faPersonWalking,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import "./App.css";
+
 
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
@@ -42,6 +43,14 @@ function App() {
     setMarkers([]);
     setRouteCoords([]);
     setRouteSteps([]);
+  };
+
+  const handleDeleteMarker = (markerIndex) => {
+    setRouteCoords([]);
+    setRouteSteps([]);
+    setMarkers((prevMarkers) =>
+      prevMarkers.filter((_, index) => index !== markerIndex)
+    );
   };
 
   const handleOptimizeRoute = async () => {
@@ -143,7 +152,7 @@ function App() {
           Оптимизирај рута
         </button>
         <button onClick={handleClear} className="btn btn-danger w-100">
-          Исчисти маркери
+          Исчисти ги сите маркери
         </button>
 
         <div className="mt-4">
@@ -160,10 +169,21 @@ function App() {
                   key={index}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  {`Маркер ${index + 1}`}
-                  <span className="badge bg-secondary rounded-pill">
-                    {`${position[0].toFixed(3)}, ${position[1].toFixed(3)}`}
-                  </span>
+                  {/* Дел за текстот */}
+                  <div>
+                    {`Маркер ${index + 1}: `}
+                    <span className="text-muted small">
+                      {`(${position[0].toFixed(3)}, ${position[1].toFixed(3)})`}
+                    </span>
+                  </div>
+                  {/* Копче за бришење */}
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => handleDeleteMarker(index)}
+                    title="Избриши маркер"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
                 </li>
               ))}
             </ul>
