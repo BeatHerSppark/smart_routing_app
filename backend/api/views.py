@@ -14,7 +14,7 @@ def find_optimal_route(request):
 
         markers_formatted = ';'.join([f'{lng},{lat}' for lat,lng in markers])
 
-        api_url = f'http://router.project-osrm.org/trip/v1/{transportation}/{markers_formatted}?steps=true&geometries=geojson&annotations=true'
+        api_url = f'http://router.project-osrm.org/trip/v1/{transportation}/{markers_formatted}?steps=true&geometries=geojson&annotations=true' # /route ednonasocna
 
         response = requests.get(api_url)
 
