@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -18,16 +18,11 @@ import {
 
 function MapCenterController({ center }) {
   const map = useMap();
-
   useEffect(() => {
     if (center) {
-      map.flyTo(center, 16, {
-        animate: true,
-        duration: 1.5,
-      });
+      map.flyTo(center, 16, { animate: true, duration: 1.5 });
     }
   }, [center]);
-
   return null;
 }
 
@@ -51,6 +46,8 @@ function App() {
   const DIRECTIONS_PER_PAGE = 5;
   const [visibleSteps, setVisibleSteps] = useState(DIRECTIONS_PER_PAGE);
   const [mapCenter, setMapCenter] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const tempMarkerRef = useRef(null);
 
   const handleMapClick = (latlng) => {
     const { lat, lng } = latlng;
@@ -63,26 +60,17 @@ function App() {
     setRouteSteps([]);
     setVisibleSteps(DIRECTIONS_PER_PAGE);
     setMapCenter(null);
+    setActiveIndex(null);
   };
 
   const handleDeleteMarker = (markerIndex) => {
     setRouteCoords([]);
     setRouteSteps([]);
     setVisibleSteps(DIRECTIONS_PER_PAGE);
+    setActiveIndex(null);
     setMarkers((prevMarkers) =>
       prevMarkers.filter((_, index) => index !== markerIndex)
     );
-  };
-
-  const handleShowMore = () => {
-    setVisibleSteps(
-      (prevVisibleSteps) => prevVisibleSteps + DIRECTIONS_PER_PAGE
-    );
-  };
-
-  const handleStepClick = (step) => {
-    const [lng, lat] = step.maneuver.location;
-    setMapCenter([lat, lng]);
   };
 
   const handleOptimizeRoute = async () => {
@@ -91,18 +79,12 @@ function App() {
       type: routeType,
       transportation: transportation,
     };
-
     const response = await fetch(`${url}/api/find-optimal-route`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     const data = await response.json();
-    console.log("Примено од Django:", data);
-
     if (data.trips) {
       const coords = data.trips[0].geometry.coordinates.map(([lng, lat]) => [
         lat,
@@ -112,8 +94,27 @@ function App() {
       const flatSteps = data.trips[0].legs.flatMap((leg) => leg.steps);
       setRouteSteps(flatSteps);
       setVisibleSteps(DIRECTIONS_PER_PAGE);
+      setActiveIndex(null);
     }
   };
+
+  const handleShowMore = () => {
+    setVisibleSteps(
+      (prevVisibleSteps) => prevVisibleSteps + DIRECTIONS_PER_PAGE
+    );
+  };
+
+  const handleStepClick = (step, index) => {
+    const [lng, lat] = step.maneuver.location;
+    setMapCenter([lat, lng]);
+    setActiveIndex(index);
+  };
+
+  useEffect(() => {
+    if (tempMarkerRef.current) {
+      tempMarkerRef.current.openPopup();
+    }
+  }, [activeIndex]);
 
   return (
     <div className="d-flex vh-100">
@@ -231,12 +232,16 @@ function App() {
                 {routeSteps.slice(0, visibleSteps).map((step, index) => (
                   <li
                     key={index}
-                    className="list-group-item list-group-item-action"
+                    className={`list-group-item list-group-item-action ${
+                      index === activeIndex ? "active" : ""
+                    }`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleStepClick(step)}
+                    onClick={() => handleStepClick(step, index)}
                   >
                     <div className="fw-bold text-capitalize">
-                      {step.maneuver.type === 'new name' ? 'Continue' : step.maneuver.type}
+                      {step.maneuver.type === "new name"
+                        ? "Продолжи право"
+                        : step.maneuver.type}
                     </div>
                     {step.name && (
                       <div className="text-muted fst-italic">
@@ -276,7 +281,7 @@ function App() {
           />
           <MapClickHandler onMapClick={handleMapClick} />
           {markers.map((position, index) => (
-            <Marker key={index} position={position}>
+            <Marker key={`marker-${index}`} position={position}>
               <Popup>Маркер {index + 1}</Popup>
             </Marker>
           ))}
@@ -287,6 +292,22 @@ function App() {
             />
           )}
           <MapCenterController center={mapCenter} />
+
+          {mapCenter && (
+            <Marker ref={tempMarkerRef} position={mapCenter}>
+              <Popup>
+                {activeIndex !== null && routeSteps[activeIndex] && (
+                  <div>
+                    <b>{routeSteps[activeIndex].maneuver.type === "new name"
+                        ? "Продолжи право"
+                        : routeSteps[activeIndex].maneuver.type.charAt(0).toUpperCase() + routeSteps[activeIndex].maneuver.type.slice(1)
+                    }</b>
+                    {routeSteps[activeIndex].name && <p className="my-1">"{routeSteps[activeIndex].name}"</p>}
+                  </div>
+                )}
+              </Popup>
+            </Marker>
+          )}
         </MapContainer>
       </div>
     </div>
