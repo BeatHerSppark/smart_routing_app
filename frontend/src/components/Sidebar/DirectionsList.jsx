@@ -1,6 +1,12 @@
-import React from 'react';
+import React from "react";
 
-function DirectionsList({ routeSteps, visibleSteps, activeIndex, onStepClick, onShowMore }) {
+function DirectionsList({
+  routeSteps,
+  visibleSteps,
+  activeIndex,
+  onStepClick,
+  onShowMore,
+}) {
   if (routeSteps.length === 0) {
     return <p className="text-muted">Насоките ќе се појават тука.</p>;
   }
@@ -17,10 +23,8 @@ function DirectionsList({ routeSteps, visibleSteps, activeIndex, onStepClick, on
             style={{ cursor: "pointer" }}
             onClick={() => onStepClick(step, index)}
           >
-            <div className="fw-bold text-capitalize">
-              {step.maneuver.type === "new name" ? "Продолжи право" : step.maneuver.type}
-            </div>
-            {step.name && (
+            <div className="fw-bold text-capitalize">{step.instruction}</div>
+            {step.name != "-" && (
               <div className="text-muted fst-italic">"{step.name}"</div>
             )}
             <small className="text-muted">
@@ -31,7 +35,10 @@ function DirectionsList({ routeSteps, visibleSteps, activeIndex, onStepClick, on
       </ul>
       {visibleSteps < routeSteps.length && (
         <div className="d-grid mt-2">
-          <button className="btn btn-outline-primary btn-sm" onClick={onShowMore}>
+          <button
+            className="btn btn-outline-primary btn-sm"
+            onClick={onShowMore}
+          >
             Прикажи повеќе ({routeSteps.length - visibleSteps} останати)
           </button>
         </div>

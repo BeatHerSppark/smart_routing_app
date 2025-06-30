@@ -9,7 +9,7 @@ function App() {
   const [routeCoords, setRouteCoords] = useState([]);
   const [routeSteps, setRouteSteps] = useState([]);
   const [routeType, setRouteType] = useState("round_trip");
-  const [transportation, setTransportation] = useState("car");
+  const [transportation, setTransportation] = useState("driving-car");
   const DIRECTIONS_PER_PAGE = 5;
   const [visibleSteps, setVisibleSteps] = useState(DIRECTIONS_PER_PAGE);
   const [mapCenter, setMapCenter] = useState(null);
@@ -68,8 +68,6 @@ function App() {
 
     if (data.trips) {
       routeTypeHelper(data.trips[0]);
-    } else {
-      routeTypeHelper(data.routes[0]);
     }
   };
 
@@ -90,6 +88,10 @@ function App() {
       tempMarkerRef.current.openPopup();
     }
   }, [activeIndex]);
+
+  useEffect(() => {
+    console.log(transportation);
+  }, [transportation]);
 
   return (
     <div className="d-flex vh-100">
