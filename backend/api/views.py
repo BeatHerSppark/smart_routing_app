@@ -81,6 +81,7 @@ def find_optimal_route(request):
             {
                 'instruction': step['instruction'],
                 'name': step.get('name', ''),
+                'location': coordinates[step['way_points'][0]] if step.get('way_points') else None,
                 'distance': step.get('distance'),
                 'duration': step.get('duration'),
                 'type': step.get('type'),

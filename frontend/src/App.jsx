@@ -78,7 +78,7 @@ function App() {
   };
 
   const handleStepClick = (step, index) => {
-    const [lng, lat] = step.maneuver.location;
+    const [lng, lat] = step.location;
     setMapCenter([lat, lng]);
     setActiveIndex(index);
   };

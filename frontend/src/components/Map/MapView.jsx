@@ -1,9 +1,23 @@
-import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import MapClickHandler from './MapClickHandler';
-import MapCenterController from './MapCenterController';
+import React, { useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
+import MapClickHandler from "./MapClickHandler";
+import MapCenterController from "./MapCenterController";
 
-function MapView({ markers, routeCoords, mapCenter, activeIndex, routeSteps, tempMarkerRef, onMapClick }) {
+function MapView({
+  markers,
+  routeCoords,
+  mapCenter,
+  activeIndex,
+  routeSteps,
+  tempMarkerRef,
+  onMapClick,
+}) {
   return (
     <div className="flex-grow-1">
       <MapContainer
@@ -37,8 +51,7 @@ function MapView({ markers, routeCoords, mapCenter, activeIndex, routeSteps, tem
             <Popup>
               {activeIndex !== null && routeSteps[activeIndex] && (
                 <div>
-                  <b>{routeSteps[activeIndex].maneuver.type === "new name" ? "Продолжи право" : routeSteps[activeIndex].maneuver.type.charAt(0).toUpperCase() + routeSteps[activeIndex].maneuver.type.slice(1)}</b>
-                  {routeSteps[activeIndex].name && <p className="my-1">"{routeSteps[activeIndex].name}"</p>}
+                  <b>{routeSteps[activeIndex].instruction}</b>
                 </div>
               )}
             </Popup>
