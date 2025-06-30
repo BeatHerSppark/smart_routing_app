@@ -25,7 +25,7 @@ def find_optimal_route(request):
         if route_type == 'round_trip':
             api_url = f'http://router.project-osrm.org/trip/v1/{osrm_profile}/{markers_formatted}?roundtrip=true&source=first&destination=last&steps=true&geometries=geojson'
         else:
-            api_url = f'http://router.project-osrm.org/trip/v1/{osrm_profile}/{markers_formatted}?roundtrip=false&source=first&destination=any&steps=true&geometries=geojson'
+            api_url = f'http://router.project-osrm.org/route/v1/{osrm_profile}/{markers_formatted}?steps=true&geometries=geojson'
 
         try:
             response = requests.get(api_url, timeout=10)

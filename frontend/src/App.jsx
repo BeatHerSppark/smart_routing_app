@@ -40,6 +40,18 @@ function App() {
     );
   };
 
+  const routeTypeHelper = (routeType) => {
+    const coords = routeType.geometry.coordinates.map(([lng, lat]) => [
+      lat,
+      lng,
+    ]);
+    setRouteCoords(coords);
+    const flatSteps = routeType.legs.flatMap((leg) => leg.steps);
+    setRouteSteps(flatSteps);
+    setVisibleSteps(DIRECTIONS_PER_PAGE);
+    setActiveIndex(null);
+  };
+
   const handleOptimizeRoute = async () => {
     const payload = {
       markers: markers,
@@ -52,16 +64,12 @@ function App() {
       body: JSON.stringify(payload),
     });
     const data = await response.json();
+    console.log(data);
+
     if (data.trips) {
-      const coords = data.trips[0].geometry.coordinates.map(([lng, lat]) => [
-        lat,
-        lng,
-      ]);
-      setRouteCoords(coords);
-      const flatSteps = data.trips[0].legs.flatMap((leg) => leg.steps);
-      setRouteSteps(flatSteps);
-      setVisibleSteps(DIRECTIONS_PER_PAGE);
-      setActiveIndex(null);
+      routeTypeHelper(data.trips[0]);
+    } else {
+      routeTypeHelper(data.routes[0]);
     }
   };
 
