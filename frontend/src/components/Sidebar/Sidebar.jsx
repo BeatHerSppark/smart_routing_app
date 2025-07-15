@@ -1,14 +1,27 @@
-import React from 'react';
-import Controls from '../Controls/Controls';
-import MarkersList from './MarkersList';
-import DirectionsList from './DirectionsList';
+import React from "react";
+import Controls from "../Controls/Controls";
+import MarkersList from "./MarkersList";
+import DirectionsList from "./DirectionsList";
+import { useAuth } from "../Auth/AuthContext";
+import { useNavigate } from "react-router";
 
 function Sidebar(props) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <div
       className="d-flex flex-column p-3 bg-light border-end shadow-sm"
       style={{ width: "380px", overflowY: "auto" }}
     >
+      <button onClick={handleLogout} className="btn btn-danger">
+        Logout
+      </button>
       <h2 className="text-center mb-3">Smart Routing App</h2>
       <p className="text-center text-muted small mb-3">
         Кликнете на мапата за да додадете локации (маркери).
@@ -25,7 +38,10 @@ function Sidebar(props) {
 
       <div className="mt-4">
         <h5>Додадени локации:</h5>
-        <MarkersList markers={props.markers} onDeleteMarker={props.handleDeleteMarker} />
+        <MarkersList
+          markers={props.markers}
+          onDeleteMarker={props.handleDeleteMarker}
+        />
       </div>
 
       <div className="mt-3 flex-grow-1">

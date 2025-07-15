@@ -1,5 +1,22 @@
 import React from "react";
 
+function formatTime(seconds) {
+  const hours = (seconds / 3600).toFixed(0);
+  seconds -= hours * 3600;
+  const minutes = (seconds / 60).toFixed(0);
+  seconds -= minutes * 60;
+  seconds = seconds.toFixed(0);
+
+  let res =
+    hours != 0
+      ? `${hours}h ${minutes}m`
+      : minutes != 0
+      ? `${minutes}m ${seconds}s`
+      : `${seconds}s`;
+
+  return res;
+}
+
 function DirectionsList({
   routeSteps,
   visibleSteps,
@@ -32,12 +49,7 @@ function DirectionsList({
             </small>
             <br />
             <small className="text-muted">
-              Време:{" "}
-              {step.duration > 3600
-                ? (step.duration / 3600).toFixed(0) + "h"
-                : step.duration > 60
-                ? (step.duration / 60).toFixed(0) + "m"
-                : step.duration.toFixed(0) + "s"}
+              Време: {formatTime(step.duration)}
             </small>
           </li>
         ))}
