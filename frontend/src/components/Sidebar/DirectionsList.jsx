@@ -1,16 +1,18 @@
 import React from "react";
 
 function formatTime(seconds) {
-  const hours = (seconds / 3600).toFixed(0);
-  seconds -= hours * 3600;
-  const minutes = (seconds / 60).toFixed(0);
-  seconds -= minutes * 60;
-  seconds = seconds.toFixed(0);
+  seconds = Math.max(0, Math.floor(seconds));
+
+  const hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+
+  const minutes = Math.floor(seconds / 60);
+  seconds %= 60;
 
   let res =
-    hours != 0
+    hours > 0
       ? `${hours}h ${minutes}m`
-      : minutes != 0
+      : minutes > 0
       ? `${minutes}m ${seconds}s`
       : `${seconds}s`;
 
