@@ -30,7 +30,7 @@ const Login = () => {
         credentials: "include",
       });
       const data = await me.json();
-      setUser(data);
+      setUser(data.username);
       navigate("/");
     } else {
       alert("Login failed");

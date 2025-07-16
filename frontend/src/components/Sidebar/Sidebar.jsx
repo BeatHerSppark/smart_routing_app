@@ -6,7 +6,7 @@ import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router";
 
 function Sidebar(props) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -19,6 +19,7 @@ function Sidebar(props) {
       className="d-flex flex-column p-3 bg-light border-end shadow-sm"
       style={{ width: "380px", overflowY: "auto" }}
     >
+      <h3>{user}</h3>
       <button onClick={handleLogout} className="btn btn-danger">
         Logout
       </button>
