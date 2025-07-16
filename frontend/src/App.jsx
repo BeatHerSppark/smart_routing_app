@@ -21,6 +21,10 @@ function App() {
     setMarkers((prevMarkers) => [...prevMarkers, [lat, lng]]);
   };
 
+  const handleLocationAdd = (latlng) => {
+    setMarkers((prevMarkers) => [...prevMarkers, latlng]);
+  };
+
   const handleClear = () => {
     setMarkers([]);
     setRouteCoords([]);
@@ -105,6 +109,7 @@ function App() {
         handleOptimizeRoute={handleOptimizeRoute}
         handleClear={handleClear}
         handleDeleteMarker={handleDeleteMarker}
+        onLocationAdd={handleLocationAdd}
         visibleSteps={visibleSteps}
         activeIndex={activeIndex}
         handleStepClick={handleStepClick}
