@@ -25,7 +25,11 @@ export function AuthProvider({ children }) {
         });
       } else {
         setUser(null);
+        setLoading(false);
       }
+    }).catch(() => {
+      setUser(null);
+      setLoading(false);
     });
   }, []);
 
@@ -49,6 +53,20 @@ export function AuthProvider({ children }) {
       console.error(e);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <div className="text-center">
+          <div className="spinner-border text-primary mb-3" style={{ width: "3rem", height: "3rem" }} role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <h5 className="text-muted">Loading Smart Routing App...</h5>
+          <p className="text-muted small">Please wait while we authenticate you</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout, loading }}>

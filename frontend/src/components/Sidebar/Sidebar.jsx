@@ -28,7 +28,7 @@ function Sidebar(props) {
     setIsSearching(true);
     try {
       const response = await fetch(
-        `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=7de233630b45491d8155cbcc370e4166&limit=3&no_annotations=1`
+        `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=7de233630b45491d8155cbcc370e4166&limit=3&no_annotations=1` // Napravi go apito vo env
       );
       const data = await response.json();
       
@@ -59,7 +59,8 @@ function Sidebar(props) {
   const handleLocationSelect = (result) => {
     const { lat, lng } = result.geometry;
     props.onLocationAdd([lat, lng]);
-    setSearchQuery(result.formatted);
+    setSearchQuery("");
+    // setSearchQuery(result.formatted);
     setShowDropdown(false);
     setSearchResults([]);
   };
