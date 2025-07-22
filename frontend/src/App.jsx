@@ -101,6 +101,7 @@ function App() {
     <div className="d-flex vh-100">
       <Sidebar
         markers={markers}
+        setMarkers={setMarkers}
         routeSteps={routeSteps}
         routeType={routeType}
         setRouteType={setRouteType}

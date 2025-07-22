@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import Papa from "papaparse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCar,
@@ -7,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Controls({
+  markers,
+  setMarkers,
   routeType,
   setRouteType,
   transportation,
@@ -14,6 +17,30 @@ function Controls({
   handleOptimizeRoute,
   handleClear,
 }) {
+  const fileInputRef = useRef(null);
+
+  const handleImportCsv = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const latLngArray = results.data.map((row) => [
+          parseFloat(row.Lat),
+          parseFloat(row.Lng),
+        ]);
+        setMarkers(() => [...latLngArray]);
+        console.log("Extracted:", latLngArray);
+      },
+    });
+  };
+
   return (
     <>
       <div className="btn-group w-100 mb-3" role="group">
@@ -82,6 +109,20 @@ function Controls({
       <button onClick={handleClear} className="btn btn-danger w-100">
         Исчисти ги сите маркери
       </button>
+
+      <button
+        onClick={handleImportCsv}
+        className="btn btn-secondary w-100 mt-2"
+      >
+        Import CSV
+      </button>
+      <input
+        type="file"
+        accept=".csv"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
     </>
   );
 }
