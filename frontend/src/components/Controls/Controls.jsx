@@ -5,7 +5,9 @@ import {
   faCar,
   faBicycle,
   faPersonWalking,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
+import SaveRouteModal from "../Routes/SaveRouteModal";
 
 function Controls({
   markers,
@@ -18,6 +20,7 @@ function Controls({
   handleClear,
 }) {
   const fileInputRef = useRef(null);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const handleImportCsv = () => {
     fileInputRef.current.click();
@@ -106,6 +109,17 @@ function Controls({
       >
         Оптимизирај рута
       </button>
+      
+      <button
+        onClick={() => setShowSaveModal(true)}
+        className="btn btn-info w-100 mb-2"
+        disabled={markers.length < 2}
+        title={markers.length < 2 ? "Треба најмалку 2 маркери за да зачувате рута" : "Зачувај рута"}
+      >
+        <FontAwesomeIcon icon={faSave} className="me-2" />
+        Зачувај рута
+      </button>
+
       <button onClick={handleClear} className="btn btn-danger w-100">
         Исчисти ги сите маркери
       </button>
@@ -122,6 +136,14 @@ function Controls({
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: "none" }}
+      />
+      
+      <SaveRouteModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        markers={markers}
+        routeType={routeType}
+        transportation={transportation}
       />
     </>
   );

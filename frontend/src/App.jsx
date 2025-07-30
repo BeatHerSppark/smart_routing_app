@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MapView from "./components/Map/MapView";
+import { SavedRoutesProvider } from "./components/Routes/SavedRoutesContext";
 
 function App() {
-  const url = "http://127.0.0.1:8000";
+  const url = "http://localhost:8000";
 
   const [markers, setMarkers] = useState([]);
   const [routeCoords, setRouteCoords] = useState([]);
@@ -98,34 +99,38 @@ function App() {
   }, [transportation]);
 
   return (
-    <div className="d-flex vh-100">
-      <Sidebar
-        markers={markers}
-        setMarkers={setMarkers}
-        routeSteps={routeSteps}
-        routeType={routeType}
-        setRouteType={setRouteType}
-        transportation={transportation}
-        setTransportation={setTransportation}
-        handleOptimizeRoute={handleOptimizeRoute}
-        handleClear={handleClear}
-        handleDeleteMarker={handleDeleteMarker}
-        onLocationAdd={handleLocationAdd}
-        visibleSteps={visibleSteps}
-        activeIndex={activeIndex}
-        handleStepClick={handleStepClick}
-        handleShowMore={handleShowMore}
-      />
-      <MapView
-        markers={markers}
-        routeCoords={routeCoords}
-        mapCenter={mapCenter}
-        activeIndex={activeIndex}
-        routeSteps={routeSteps}
-        tempMarkerRef={tempMarkerRef}
-        onMapClick={handleMapClick}
-      />
-    </div>
+    <SavedRoutesProvider>
+      <div className="d-flex vh-100">
+        <Sidebar
+          markers={markers}
+          setMarkers={setMarkers}
+          routeSteps={routeSteps}
+          routeType={routeType}
+          setRouteType={setRouteType}
+          transportation={transportation}
+          setTransportation={setTransportation}
+          handleOptimizeRoute={handleOptimizeRoute}
+          handleClear={handleClear}
+          handleDeleteMarker={handleDeleteMarker}
+          onLocationAdd={handleLocationAdd}
+          visibleSteps={visibleSteps}
+          activeIndex={activeIndex}
+          handleStepClick={handleStepClick}
+          handleShowMore={handleShowMore}
+          setRouteCoords={setRouteCoords}
+          setRouteSteps={setRouteSteps}
+        />
+        <MapView
+          markers={markers}
+          routeCoords={routeCoords}
+          mapCenter={mapCenter}
+          activeIndex={activeIndex}
+          routeSteps={routeSteps}
+          tempMarkerRef={tempMarkerRef}
+          onMapClick={handleMapClick}
+        />
+      </div>
+    </SavedRoutesProvider>
   );
 }
 

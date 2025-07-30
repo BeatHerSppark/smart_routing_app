@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Controls from "../Controls/Controls";
 import MarkersList from "./MarkersList";
 import DirectionsList from "./DirectionsList";
+import SavedRoutesList from "../Routes/SavedRoutesList";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router";
 
@@ -12,6 +13,14 @@ function Sidebar(props) {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleLoadRoute = (route) => {
+    props.setMarkers(route.markers);
+    props.setRouteType(route.route_type);
+    props.setTransportation(route.transportation);
+    if (props.setRouteCoords) props.setRouteCoords([]);
+    if (props.setRouteSteps) props.setRouteSteps([]);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -224,6 +233,11 @@ function Sidebar(props) {
         handleOptimizeRoute={props.handleOptimizeRoute}
         handleClear={props.handleClear}
       />
+
+      <div className="mt-4">
+        <h5>Зачувани рути:</h5>
+        <SavedRoutesList onLoadRoute={handleLoadRoute} />
+      </div>
 
       <div className="mt-4">
         <h5>Додадени локации:</h5>
