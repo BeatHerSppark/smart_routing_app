@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./reglog.css";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "./AuthContext";
-import { getCookie } from "./api";
+import { login } from "./api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,23 +14,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const response = await fetch("http://localhost:8000/users/login", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      body: JSON.stringify(form),
-    });
-
-    if (response.ok) {
-      const me = await fetch("http://localhost:8000/users/me", {
-        credentials: "include",
-      });
-      const data = await me.json();
-      setUser(data.username);
+    const res = await login(form.username, form.password);
+    if (res.ok) {
+      const userData = await (
+        await fetch("http://localhost:8000/users/me", {
+          credentials: "include",
+        })
+      ).json();
+      setUser(userData.username);
       navigate("/");
     } else {
       alert("Login failed");

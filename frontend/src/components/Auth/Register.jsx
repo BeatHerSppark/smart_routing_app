@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./reglog.css";
 import { Link, useNavigate } from "react-router";
-import { getCookie } from "./api";
+import { register } from "./api";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,21 +16,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:8000/users/register", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-      body: JSON.stringify(form),
-    });
-
-    if (response.ok) {
+    const res = await register(form.username, form.password, form.password2);
+    if (res.ok) {
       navigate("/login");
     } else {
-      const data = await response.json();
-      alert(JSON.stringify(data));
+      const err = await res.json();
+      alert(err.error || JSON.stringify(err));
     }
   };
 

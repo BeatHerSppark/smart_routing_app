@@ -5,9 +5,10 @@ import DirectionsList from "./DirectionsList";
 import SavedRoutesList from "../Routes/SavedRoutesList";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router";
+import { logout } from "../Auth/api";
 
 function Sidebar(props) {
-  const { user, logout } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -24,6 +25,7 @@ function Sidebar(props) {
 
   const handleLogout = async () => {
     await logout();
+    setUser(null);
     navigate("/login");
   };
 
