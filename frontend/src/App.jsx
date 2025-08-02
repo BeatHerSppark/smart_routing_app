@@ -7,6 +7,8 @@ function App() {
   const url = "http://localhost:8000";
 
   const [markers, setMarkers] = useState([]);
+  const [draggableMarkers, setDraggableMarkers] = useState([]);
+  const [movedMarkers, setMovedMarkers] = useState([]);
   const [routeCoords, setRouteCoords] = useState([]);
   const [routeSteps, setRouteSteps] = useState([]);
   const [routeType, setRouteType] = useState("round_trip");
@@ -28,6 +30,8 @@ function App() {
 
   const handleClear = () => {
     setMarkers([]);
+    setMovedMarkers([]);
+    setDraggableMarkers([]);
     setRouteCoords([]);
     setRouteSteps([]);
     setVisibleSteps(DIRECTIONS_PER_PAGE);
@@ -36,6 +40,7 @@ function App() {
   };
 
   const handleDeleteMarker = (markerIndex) => {
+    setDraggableMarkers([]);
     setRouteCoords([]);
     setRouteSteps([]);
     setVisibleSteps(DIRECTIONS_PER_PAGE);
@@ -51,6 +56,13 @@ function App() {
       lng,
     ]);
     setRouteCoords(coords);
+
+    const dragMarkerInterval = 20;
+    const dragMarkers = coords
+      .slice(5)
+      .filter((_, idx) => idx % dragMarkerInterval == 0);
+    setDraggableMarkers(dragMarkers);
+
     const flatSteps = routeType.legs.flatMap((leg) => leg.steps);
     setRouteSteps(flatSteps);
     setVisibleSteps(DIRECTIONS_PER_PAGE);
@@ -59,7 +71,7 @@ function App() {
 
   const handleOptimizeRoute = async () => {
     const payload = {
-      markers: markers,
+      markers: [...markers, ...movedMarkers],
       type: routeType,
       transportation: transportation,
     };
@@ -88,6 +100,28 @@ function App() {
     setActiveIndex(index);
   };
 
+  const handleDragDraggableMarker = (e, index) => {
+    const latLng = e.target.getLatLng();
+    setMovedMarkers((prevMarkers) => [
+      ...prevMarkers,
+      [latLng.lat, latLng.lng],
+    ]);
+    console.log(latLng);
+    console.log(draggableMarkers[index]);
+    console.log(movedMarkers);
+  };
+
+  const handleDragMovedMarker = (e, index) => {
+    const latLng = e.target.getLatLng();
+    setMovedMarkers((prevMarkers) =>
+      prevMarkers.filter((_, idx) => idx != index)
+    );
+    setMovedMarkers((prevMarkers) => [
+      ...prevMarkers,
+      [latLng.lat, latLng.lng],
+    ]);
+  };
+
   useEffect(() => {
     if (tempMarkerRef.current) {
       tempMarkerRef.current.openPopup();
@@ -97,6 +131,10 @@ function App() {
   useEffect(() => {
     console.log(transportation);
   }, [transportation]);
+
+  useEffect(() => {
+    if (movedMarkers.length > 0) handleOptimizeRoute();
+  }, [movedMarkers]);
 
   return (
     <SavedRoutesProvider>
@@ -122,12 +160,16 @@ function App() {
         />
         <MapView
           markers={markers}
+          draggableMarkers={draggableMarkers}
+          movedMarkers={movedMarkers}
           routeCoords={routeCoords}
           mapCenter={mapCenter}
           activeIndex={activeIndex}
           routeSteps={routeSteps}
           tempMarkerRef={tempMarkerRef}
           onMapClick={handleMapClick}
+          onDragDraggableMarker={handleDragDraggableMarker}
+          onDragMovedMarker={handleDragMovedMarker}
         />
       </div>
     </SavedRoutesProvider>

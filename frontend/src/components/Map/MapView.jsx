@@ -8,15 +8,26 @@ import {
 } from "react-leaflet";
 import MapClickHandler from "./MapClickHandler";
 import MapCenterController from "./MapCenterController";
+import L from "leaflet";
+
+const whiteDotIcon = L.divIcon({
+  className: "custom-white-marker",
+  iconSize: [12, 12],
+  iconAnchor: [6, 6],
+});
 
 function MapView({
   markers,
+  draggableMarkers,
+  movedMarkers,
   routeCoords,
   mapCenter,
   activeIndex,
   routeSteps,
   tempMarkerRef,
   onMapClick,
+  onDragDraggableMarker,
+  onDragMovedMarker,
 }) {
   return (
     <div className="flex-grow-1">
@@ -35,6 +46,30 @@ function MapView({
           <Marker key={`marker-${index}`} position={position}>
             <Popup>Маркер {index + 1}</Popup>
           </Marker>
+        ))}
+
+        {draggableMarkers.map((position, index) => (
+          <Marker
+            key={index}
+            position={position}
+            icon={whiteDotIcon}
+            draggable={true}
+            eventHandlers={{
+              dragend: (e) => onDragDraggableMarker(e, index),
+            }}
+          />
+        ))}
+
+        {movedMarkers.map((position, index) => (
+          <Marker
+            key={index}
+            position={position}
+            icon={whiteDotIcon}
+            draggable={true}
+            eventHandlers={{
+              dragend: (e) => onDragMovedMarker(e, index),
+            }}
+          />
         ))}
 
         {routeCoords.length > 0 && (

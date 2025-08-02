@@ -3,3 +3,11 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.custom-white-marker {
+  background-color: white;
+  border-radius: 50%;
+  border: 2px solid gray;
+  width: 12px;
+  height: 12px;
+}
